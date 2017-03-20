@@ -41,6 +41,28 @@ static inline CGFloat CGPointToAngle(const CGPoint a)
     return atan2f(a.y, a.x);
 }
 
+
+
+// 使改变方向时更平滑
+static inline CGFloat ScalarSign(CGFloat a)
+{
+    return a >= 0 ? 1 : -1;
+}
+// Returns shortest angle between two angles,
+// between -M_PI and M_PI
+static inline CGFloat ScalarShortestAngleBetween(const CGFloat a, const CGFloat b)
+{
+    CGFloat difference = b - a;
+    CGFloat angle = fmodf(difference, M_PI * 2);
+    if (angle >= M_PI) {
+        angle -= M_PI * 2; }
+    else if (angle <= -M_PI) { angle += M_PI * 2;
+    }
+    return angle;
+}
+
+static const float ZOMBIE_ROTATE_RADIANS_PER_SEC = 4 * M_PI;
+
 @implementation GameScene
 {
     SKSpriteNode *_player;
@@ -60,6 +82,7 @@ static inline CGFloat CGPointToAngle(const CGPoint a)
 //        bgSprite.position = CGPointZero;
         bgSprite.zRotation = M_PI/8;
         [self addChild:bgSprite];
+        [self createOneNewSprite];
         
         NSLog(@"%f %f",self.size.width,self.size.height);
         
@@ -126,9 +149,8 @@ static inline CGFloat CGPointToAngle(const CGPoint a)
     UITouch *touch = [touches anyObject];
     CGPoint touchLocation = [touch locationInNode:self];
     [self moveZombieToward:touchLocation];
+    [self checkStop:touchLocation];
     
-    
-    NSLog(@"touchesBegan");
 }
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
@@ -136,15 +158,12 @@ static inline CGFloat CGPointToAngle(const CGPoint a)
     [self moveZombieToward:touchLocation];
     
     
-    NSLog(@"touchesMoved");
 }
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
     CGPoint touchLocation = [touch locationInNode:self];
     [self moveZombieToward:touchLocation];
     
-    
-    NSLog(@"touchesEnded");
 }
 
 
@@ -186,11 +205,67 @@ static inline CGFloat CGPointToAngle(const CGPoint a)
     _velocity = newVelocity;
 }
 
+- (void)checkStop:(CGPoint)touchPoint
+{
+    CGPoint offset = CGPointSubtract(touchPoint, _player.position);
+    CGFloat distance = CGPointLength(offset);
+    if(distance < _dt * ZOMBIE_MOVE_POINTS_PER_SEC)
+    {
+        _velocity = CGPointMake(0, 0);
+        NSLog(@"******** stop ********");
+    }
+    
+    NSLog(@"%f %f ",distance, _dt * ZOMBIE_MOVE_POINTS_PER_SEC);
+}
+
 // 精灵前进时改变方向时 旋转的角度
 - (void)rotateSprite:(SKSpriteNode *)sprite toFace:(CGPoint)direction
 {
     sprite.zRotation = atan2f(direction.y, direction.x);
 }
 
+
+- (void)createOneNewSprite
+{
+    SKSpriteNode *enemy = [SKSpriteNode spriteNodeWithImageNamed:@"monster"];
+    enemy.position = CGPointMake(self.size.width + enemy.size.width/2, self.size.height/2);
+    [self addChild:enemy];
+    
+//    // 1
+//    SKAction *actionMidMove =
+//    [SKAction moveTo:CGPointMake(self.size.width/2,
+//                                 enemy.size.height/2)
+//            duration:1.0];
+//    // 2
+//    SKAction *actionMove =
+//    [SKAction moveTo:CGPointMake(-enemy.size.width/2,
+//                                 enemy.position.y) duration:1.0];
+    
+    // 这个是可逆的action
+    SKAction *actionMidMove = [SKAction moveByX:-self.size.width/2-enemy.size.width/2
+                    y:-self.size.height/2+enemy.size.height/2
+                    duration:1.0];
+    
+    SKAction *actionMove = [SKAction moveByX:-self.size.width/2-enemy.size.width/2
+                    y:self.size.height/2+enemy.size.height/2
+                    duration:1.0];
+    
+    SKAction *wait = [SKAction waitForDuration:0.25];
+    
+    SKAction *logMessage = [SKAction runBlock:^{
+        
+        NSLog(@"Reached bottom!");
+    }];
+    
+    
+    SKAction *reverseMid = [actionMidMove reversedAction];
+    
+    SKAction *reverseMove = [actionMove reversedAction];
+    
+    // 3
+    SKAction *sequence = [SKAction sequence:@[actionMidMove, logMessage, wait, actionMove, reverseMove, logMessage, wait ,reverseMid]];
+    // 4
+    [enemy runAction:sequence];
+}
 
 @end
