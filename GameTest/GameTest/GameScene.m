@@ -241,7 +241,7 @@ static const float ZOMBIE_ROTATE_RADIANS_PER_SEC = 4 * M_PI;
 //    [SKAction moveTo:CGPointMake(-enemy.size.width/2,
 //                                 enemy.position.y) duration:1.0];
     
-    // 这个是可逆的action
+    // 这个是可逆的action  上面两个moveTo是不可逆的
     SKAction *actionMidMove = [SKAction moveByX:-self.size.width/2-enemy.size.width/2
                     y:-self.size.height/2+enemy.size.height/2
                     duration:1.0];
@@ -263,7 +263,11 @@ static const float ZOMBIE_ROTATE_RADIANS_PER_SEC = 4 * M_PI;
     SKAction *reverseMove = [actionMove reversedAction];
     
     // 3
-    SKAction *sequence = [SKAction sequence:@[actionMidMove, logMessage, wait, actionMove, reverseMove, logMessage, wait ,reverseMid]];
+//    SKAction *sequence = [SKAction sequence:@[actionMidMove, logMessage, wait, actionMove, reverseMove, logMessage, wait ,reverseMid]];
+    // 或者
+    SKAction *sequence = [SKAction sequence:@[actionMidMove, logMessage, wait, actionMove]];
+    sequence = [SKAction sequence:@[sequence,[sequence reversedAction]]];
+    
     // 4
     [enemy runAction:sequence];
 }
