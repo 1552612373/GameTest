@@ -106,17 +106,16 @@ static inline CGFloat CGPointToAngle(const CGPoint a)
 - (void)moveSprite:(SKSpriteNode *)sprite velocity:(CGPoint)velocity
 {
     // 1
-    CGPoint amountToMove = CGPointMake(velocity.x * _dt, velocity.y * _dt);
-//    NSLog(@"Amount to move: %@", NSStringFromCGPoint(amountToMove));
+    CGPoint amountToMove = CGPointMultiplyScalar(velocity, _dt);
+    //    NSLog(@"Amount to move: %@", NSStringFromCGPoint(amountToMove));
     // 2
-    sprite.position = CGPointMake(sprite.position.x + amountToMove.x,
-                sprite.position.y + amountToMove.y);
+    sprite.position = CGPointAdd(sprite.position, amountToMove);
 }
 
 - (void)moveZombieToward:(CGPoint)location {
-    CGPoint offset = CGPointMake(location.x - _player.position.x, location.y - _player.position.y);
-    CGFloat length = sqrtf(offset.x * offset.x + offset.y * offset.y);
-    CGPoint direction = CGPointMake(offset.x / length, offset.y / length);
+    CGPoint offset = CGPointSubtract(location, _player.position);
+//    CGFloat length = CGPointLength(offset);
+    CGPoint direction = CGPointNormalize(offset);
     
     _velocity = CGPointMake(direction.x * ZOMBIE_MOVE_POINTS_PER_SEC,
                 direction.y * ZOMBIE_MOVE_POINTS_PER_SEC);
