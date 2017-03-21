@@ -85,11 +85,12 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
     self = [super initWithSize:size];
     if(self)
     {
-        SKSpriteNode *bgSprite = [SKSpriteNode spriteNodeWithImageNamed:@"Spaceship"];
-        bgSprite.position = CGPointMake(self.size.width/2, self.size.height/2);
+        SKSpriteNode *bgSprite = [SKSpriteNode spriteNodeWithImageNamed:@"beach.jpg"];
+        bgSprite.position = CGPointMake(self.size.width/2, self.size.height/2+30);
+        bgSprite.size = CGSizeMake(self.frame.size.width, self.frame.size.height+60);
 //        bgSprite.anchorPoint = CGPointZero;
 //        bgSprite.position = CGPointZero;
-        bgSprite.zRotation = M_PI/8;
+//        bgSprite.zRotation = M_PI/8;
         [self addChild:bgSprite];
         
         _zombieAnimation = [SKAction repeatActionForever: [SKAction sequence:@[[SKAction performSelector:@selector(createOneNewSprite) onTarget:self],[SKAction waitForDuration:2.0]]]];
@@ -136,6 +137,9 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
     
     // 碰撞反弹时转头（旋转）
     [self rotateSprite:_zombie toFace:_velocity];
+    
+    // 碰撞检测
+    [self checkCollisions];
 }
 
 - (void)moveSprite:(SKSpriteNode *)sprite velocity:(CGPoint)velocity
@@ -218,6 +222,39 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
     _velocity = newVelocity;
 }
 
+
+// 碰撞检测
+- (void)checkCollisions
+{
+    
+    [self enumerateChildNodesWithName:@"cat" usingBlock:^(SKNode *node, BOOL *stop){
+        
+                               SKSpriteNode *cat = (SKSpriteNode *)node;
+        
+                               if (CGRectIntersectsRect(cat.frame, _zombie.frame))
+                               {
+                                   [cat removeFromParent];
+                                   NSLog(@"remove cat");
+                               }
+    }];
+    
+    
+    [self enumerateChildNodesWithName:@"enemy"
+                           usingBlock:^(SKNode *node, BOOL *stop){
+                               
+                               SKSpriteNode *enemy = (SKSpriteNode *)node;
+                               
+                               CGRect smallerFrame = CGRectInset(enemy.frame, 20, 20);
+                               
+                               if (CGRectIntersectsRect(smallerFrame, _zombie.frame)) {
+                                   [enemy removeFromParent];
+                                   NSLog(@"remove enemy");
+                               }
+                               
+   }];
+    
+}
+// 检测是否应该停止 （暂没效果）
 - (void)checkStop:(CGPoint)touchPoint
 {
     CGPoint offset = CGPointSubtract(touchPoint, _zombie.position);
@@ -228,7 +265,7 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
         NSLog(@"******** stop ********");
     }
     
-    NSLog(@"%f %f ",distance, _dt * ZOMBIE_MOVE_POINTS_PER_SEC);
+//    NSLog(@"%f %f ",distance, _dt * ZOMBIE_MOVE_POINTS_PER_SEC);
 }
 
 // 精灵前进时改变方向时 旋转的角度
@@ -241,11 +278,12 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
 
 - (void)createOneNewSprite
 {
-    SKSpriteNode *enemy = [SKSpriteNode spriteNodeWithImageNamed:@"monster"];
+    SKSpriteNode *enemy = [SKSpriteNode spriteNodeWithImageNamed:@"chick.png"];
     enemy.position = CGPointMake(self.size.width + enemy.size.width/2,
                                  ScalarRandomRange(enemy.size.height/2,
                                                    self.size.height-enemy.size.height/2));
-
+    enemy.size = CGSizeMake(80, 80);
+    enemy.name = @"enemy";
     [self addChild:enemy];
     
     
@@ -264,10 +302,12 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
 
 - (void)spawnCat {
     // 1
-    SKSpriteNode *cat = [SKSpriteNode spriteNodeWithImageNamed:@"projectile"];
+    SKSpriteNode *cat = [SKSpriteNode spriteNodeWithImageNamed:@"cat"];
+    float scaleWH = 1080/1920.0;
+    cat.size = CGSizeMake(100*scaleWH, 100);
+    cat.name = @"cat";
     
-    
-    cat.position = CGPointMake( ScalarRandomRange(0, self.size.width), ScalarRandomRange(0, self.size.height));
+    cat.position = CGPointMake( ScalarRandomRange(50, self.size.width), ScalarRandomRange(50, self.size.height));
     cat.xScale = 0;
     cat.yScale = 0;
     [self addChild:cat];
