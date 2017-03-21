@@ -73,10 +73,11 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
 
 @implementation GameScene
 {
-    SKSpriteNode *_player;
+    SKSpriteNode *_zombie;
     NSTimeInterval _lastUpdateTime;
     NSTimeInterval _dt;
     CGPoint _velocity;
+    SKAction *_zombieAnimation;
 }
 
 - (instancetype)initWithSize:(CGSize)size
@@ -90,20 +91,23 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
 //        bgSprite.position = CGPointZero;
         bgSprite.zRotation = M_PI/8;
         [self addChild:bgSprite];
-        [self runAction:[SKAction repeatActionForever: [SKAction sequence:@[[SKAction performSelector:@selector(createOneNewSprite) onTarget:self],[SKAction waitForDuration:2.0]]]]];
+        
+        _zombieAnimation = [SKAction repeatActionForever: [SKAction sequence:@[[SKAction performSelector:@selector(createOneNewSprite) onTarget:self],[SKAction waitForDuration:2.0]]]];
+        [self runAction:_zombieAnimation];
+        
+        [self runAction:[SKAction repeatActionForever:[SKAction sequence:@[[SKAction performSelector:@selector(spawnCat) onTarget:self],[SKAction waitForDuration:1.0]]]]];
         
         NSLog(@"%f %f",self.size.width,self.size.height);
         
         
-        _player = [SKSpriteNode spriteNodeWithImageNamed:@"player"];
-        _player.position = CGPointMake(100, 100);
-        _player.size = CGSizeMake(100, 100);
-        [self addChild:_player];
+        _zombie = [SKSpriteNode spriteNodeWithImageNamed:@"player"];
+        _zombie.position = CGPointMake(100, 100);
+        _zombie.size = CGSizeMake(100, 100);
+        [self addChild:_zombie];
     }
     return self;
     
 }
-
 
 
 
@@ -118,20 +122,20 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
     _lastUpdateTime = currentTime;
 //    NSLog(@"%0.2f milliseconds since last update", _dt * 1000);
     
-//    _player.position = CGPointMake(_player.position.x + 2, _player.position.y);  // 向右无限移动
+//    _zombie.position = CGPointMake(_zombie.position.x + 2, _zombie.position.y);  // 向右无限移动
 //
-//    [self moveSprite:_player velocity:CGPointMake(ZOMBIE_MOVE_POINTS_PER_SEC, 0)];
+//    [self moveSprite:_zombie velocity:CGPointMake(ZOMBIE_MOVE_POINTS_PER_SEC, 0)];
     
     
     
     // 精灵移动
-    [self moveSprite:_player velocity:_velocity];
+    [self moveSprite:_zombie velocity:_velocity];
     
     // 检查是否碰到边缘
     [self boundsCheckPlayer];
     
     // 碰撞反弹时转头（旋转）
-    [self rotateSprite:_player toFace:_velocity];
+    [self rotateSprite:_zombie toFace:_velocity];
 }
 
 - (void)moveSprite:(SKSpriteNode *)sprite velocity:(CGPoint)velocity
@@ -144,7 +148,8 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
 }
 
 - (void)moveZombieToward:(CGPoint)location {
-    CGPoint offset = CGPointSubtract(location, _player.position);
+    
+    CGPoint offset = CGPointSubtract(location, _zombie.position);
 //    CGFloat length = CGPointLength(offset);
     CGPoint direction = CGPointNormalize(offset);
     
@@ -178,7 +183,7 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
 // 检查是否碰撞到场景边缘，碰到则反弹
 - (void)boundsCheckPlayer {
     // 1
-    CGPoint newPosition = _player.position;
+    CGPoint newPosition = _zombie.position;
     CGPoint newVelocity = _velocity;
     // 2
     CGPoint bottomLeft = CGPointZero;
@@ -209,17 +214,17 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
         newVelocity.y = -newVelocity.y;
     }
     // 4
-    _player.position = newPosition;
+    _zombie.position = newPosition;
     _velocity = newVelocity;
 }
 
 - (void)checkStop:(CGPoint)touchPoint
 {
-    CGPoint offset = CGPointSubtract(touchPoint, _player.position);
+    CGPoint offset = CGPointSubtract(touchPoint, _zombie.position);
     CGFloat distance = CGPointLength(offset);
     if(distance < _dt * ZOMBIE_MOVE_POINTS_PER_SEC)
     {
-        _velocity = CGPointMake(0, 0);
+        _velocity = CGPointZero;
         NSLog(@"******** stop ********");
     }
     
@@ -251,11 +256,53 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
     SKAction *actionRemove = [SKAction removeFromParent];
     [enemy runAction:[SKAction sequence:@[actionMove, actionRemove]]];
     
-    
-    
-    
+
     
 }
+
+
+
+- (void)spawnCat {
+    // 1
+    SKSpriteNode *cat = [SKSpriteNode spriteNodeWithImageNamed:@"projectile"];
+    
+    
+    cat.position = CGPointMake( ScalarRandomRange(0, self.size.width), ScalarRandomRange(0, self.size.height));
+    cat.xScale = 0;
+    cat.yScale = 0;
+    [self addChild:cat];
+    // 2
+    SKAction *appear = [SKAction scaleTo:1.0 duration:0.5];
+    
+    
+    cat.zRotation = -M_PI / 16;
+    SKAction *leftWiggle = [SKAction rotateByAngle:M_PI / 8
+                                          duration:0.5];
+    SKAction *rightWiggle = [leftWiggle reversedAction];
+    SKAction *fullWiggle =[SKAction sequence:@[leftWiggle, rightWiggle]];
+    
+    // 左右摇摆
+//    SKAction *wiggleWait = [SKAction repeatAction:fullWiggle count:10];
+    
+    // 不停旋转
+//    SKAction *wiggleWait = [SKAction repeatAction:[SKAction rotateByAngle:M_PI * 18
+//                                                                 duration:1] count:5];
+    
+    
+    // group action  同时的action
+    SKAction *scaleUp = [SKAction scaleBy:1.2 duration:0.25];
+    SKAction *scaleDown = [scaleUp reversedAction];
+    SKAction *fullScale = [SKAction sequence:@[scaleUp, scaleDown, scaleUp, scaleDown]];
+    SKAction *group = [SKAction group:@[fullScale, fullWiggle]];
+    SKAction *groupWait = [SKAction repeatAction:group count:5];
+    
+    //SKAction *wait = [SKAction waitForDuration:10.0];
+    
+    SKAction *disappear = [SKAction scaleTo:0.0 duration:0.5];
+    SKAction *removeFromParent = [SKAction removeFromParent];
+    [cat runAction:[SKAction sequence:@[appear, groupWait, disappear, removeFromParent]]];
+}
+
                                  
 //// 基础action例子
 //- (void)createOneNewSprite
