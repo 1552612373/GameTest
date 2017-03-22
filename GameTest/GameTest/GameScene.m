@@ -78,6 +78,8 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
     NSTimeInterval _dt;
     CGPoint _velocity;
     SKAction *_zombieAnimation;
+    SKAction *_catCollisionSound; // 音效
+    SKAction *_enemyCollisionSound; // 音效
 }
 
 - (instancetype)initWithSize:(CGSize)size
@@ -85,6 +87,11 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
     self = [super initWithSize:size];
     if(self)
     {
+        // 先创建这个action，为了防止第一次加载声音有些许卡顿
+        _catCollisionSound = [SKAction playSoundFileNamed:@"hitCat.wav" waitForCompletion:NO];
+        _enemyCollisionSound = [SKAction playSoundFileNamed:@"hitCatLady.wav" waitForCompletion:NO];
+        
+        
         SKSpriteNode *bgSprite = [SKSpriteNode spriteNodeWithImageNamed:@"beach.jpg"];
         bgSprite.position = CGPointMake(self.size.width/2, self.size.height/2+30);
         bgSprite.size = CGSizeMake(self.frame.size.width, self.frame.size.height+60);
@@ -138,9 +145,15 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
     // 碰撞反弹时转头（旋转）
     [self rotateSprite:_zombie toFace:_velocity];
     
+    
+}
+
+- (void)didEvaluateActions
+{
     // 碰撞检测
     [self checkCollisions];
 }
+
 
 - (void)moveSprite:(SKSpriteNode *)sprite velocity:(CGPoint)velocity
 {
@@ -235,6 +248,8 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
                                {
                                    [cat removeFromParent];
                                    NSLog(@"remove cat");
+                                   // 播放音效
+                                   [self runAction:_catCollisionSound];
                                }
     }];
     
@@ -246,9 +261,12 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
                                
                                CGRect smallerFrame = CGRectInset(enemy.frame, 20, 20);
                                
-                               if (CGRectIntersectsRect(smallerFrame, _zombie.frame)) {
+                               if (CGRectIntersectsRect(smallerFrame, _zombie.frame))
+                               {
                                    [enemy removeFromParent];
                                    NSLog(@"remove enemy");
+                                   // 播放音效
+                                   [self runAction:_enemyCollisionSound];
                                }
                                
    }];

@@ -14,6 +14,7 @@
 		2F2711E61E77952300F412FD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2F2711E41E77952300F412FD /* Main.storyboard */; };
 		2F2711E81E77952300F412FD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F2711E71E77952300F412FD /* Assets.xcassets */; };
 		2F2711EB1E77952300F412FD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2F2711E91E77952300F412FD /* LaunchScreen.storyboard */; };
+		2FDB488B1E823E2400C997F5 /* hitCat.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2FDB488A1E823E2400C997F5 /* hitCat.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		2F2711E71E77952300F412FD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2F2711EA1E77952300F412FD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2F2711EC1E77952300F412FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2FDB488A1E823E2400C997F5 /* hitCat.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hitCat.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 		2F2711D31E77952300F412FD /* GameTest */ = {
 			isa = PBXGroup;
 			children = (
+				2FDB488D1E823FD300C997F5 /* sounds */,
 				2F2711D71E77952300F412FD /* AppDelegate.h */,
 				2F2711D81E77952300F412FD /* AppDelegate.m */,
 				2F2711DE1E77952300F412FD /* GameScene.h */,
@@ -82,6 +85,14 @@
 				2F2711D51E77952300F412FD /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2FDB488D1E823FD300C997F5 /* sounds */ = {
+			isa = PBXGroup;
+			children = (
+				2FDB488A1E823E2400C997F5 /* hitCat.wav */,
+			);
+			name = sounds;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -144,6 +155,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2F2711E61E77952300F412FD /* Main.storyboard in Resources */,
+				2FDB488B1E823E2400C997F5 /* hitCat.wav in Resources */,
 				2F2711E81E77952300F412FD /* Assets.xcassets in Resources */,
 				2F2711EB1E77952300F412FD /* LaunchScreen.storyboard in Resources */,
 			);
