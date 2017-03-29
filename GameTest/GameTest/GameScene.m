@@ -21,7 +21,7 @@ static inline CGFloat ScalarRandomRange(CGFloat min, CGFloat max)
 static const float ZOMBIE_MOVE_POINTS_PER_SEC = 120; // zombie速度
 static const float CAT_MOVE_POINTS_PER_SEC = 120.0; // cat速度
 static const float  BG_POINTS_PER_SEC = 50; // 背景移动速度
-
+static const int ZOMBIE_LIVES = 5; // zombie生命数
 
 static inline CGPoint CGPointAdd(const CGPoint a, const CGPoint b)
 {
@@ -106,15 +106,22 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
         for (int i = 0; i < 2; i++)
         {
             SKSpriteNode *bg = [SKSpriteNode spriteNodeWithImageNamed:@"background"];
+            float WHScale = 1130/320.0;
+            float bgWidth = self.size.height * WHScale;
+            bg.size = CGSizeMake( bgWidth , self.size.height);
             bg.anchorPoint = CGPointZero;
-            bg.position =  CGPointMake(i * self.size.width, 0);
-            bg.size = self.size;
+            bg.position =  CGPointMake(i * bgWidth, 0);
             bg.name = @"bg";
             [_bgLayer addChild:bg];
         }
         
-        _lives = 5;
+        
+        
+        _lives = ZOMBIE_LIVES;
         _gameOver = NO;
+        
+        [self createLivesShowView];
+        [self createCatShowView];
         
         // 先创建这个action，为了防止第一次加载声音有些许卡顿
         _catCollisionSound = [SKAction playSoundFileNamed:@"hitCat.wav" waitForCompletion:NO];
@@ -139,6 +146,49 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
         [self addChild:_zombie];
     }
     return self;
+    
+}
+
+- (void)createLivesShowView
+{
+    [self enumerateChildNodesWithName:@"livesCount"
+                           usingBlock:^(SKNode *node, BOOL *stop){
+                               
+                               [node removeFromParent];
+                               
+                               
+                           }];
+    
+
+    for(int i = 1 ; i < _lives+1 ; i++)
+    {
+        SKSpriteNode *leftNode = [SKSpriteNode spriteNodeWithImageNamed:@"zombie48_48"];
+        leftNode.name = @"livesCount";
+        float space = 5;
+        float nodeWidth = 24;
+        leftNode.size = CGSizeMake(nodeWidth, nodeWidth);
+        leftNode.position = CGPointMake( (space + nodeWidth/2)*i , self.size.height-nodeWidth/2-space);
+        leftNode.alpha = 0.7;
+        [self addChild:leftNode];
+    }
+    
+}
+
+- (void)createCatShowView
+{
+    SKSpriteNode *rightNode = [SKSpriteNode spriteNodeWithImageNamed:@"cat_Fotor"];
+    float space = 5;
+    float WHScale = 1080/1920.0;
+    float nodeWidth = 25;
+    rightNode.size = CGSizeMake(nodeWidth, nodeWidth);
+    rightNode.position = CGPointMake( (space + 24/2)*5 +60 , self.size.height - 24/2 - space);
+    rightNode.alpha = 0.7;
+    [self addChild:rightNode];
+    
+    SKSpriteNode *mulNode = [SKSpriteNode spriteNodeWithImageNamed:@"multi"];
+    mulNode.size = CGSizeMake(nodeWidth, nodeWidth);
+    mulNode.position = CGPointMake( (space + 24/2)*5 + 60 +30 , self.size.height - 24/2 - space);
+    [self addChild:mulNode];
     
 }
 
@@ -369,6 +419,8 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
                                    [self runAction:_enemyCollisionSound];
                                    [self loseCats];
                                    _lives--;
+                                   [self createLivesShowView];
+
                                }
                                
    }];
@@ -535,15 +587,19 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
 
 - (void)moveBg
 {
+    float WHScale = 1130/320.0;
+    float bgWidth = self.size.height * WHScale;
+    
+    
     CGPoint bgVelocity = CGPointMake(-BG_POINTS_PER_SEC, 0);
     CGPoint amtToMove = CGPointMultiplyScalar(bgVelocity, _dt);
     _bgLayer.position = CGPointAdd(_bgLayer.position, amtToMove);
     [_bgLayer enumerateChildNodesWithName:@"bg" usingBlock:^(SKNode *node, BOOL *stop){
         SKSpriteNode *bg = (SKSpriteNode *)node;
         CGPoint bgScreenPos = [_bgLayer convertPoint:bg.position toNode:self];
-        if (bgScreenPos.x <= -bg.size.width)
+        if (bgScreenPos.x <= -bgWidth)
         {
-            bg.position = CGPointMake(bg.position.x + bg.size.width*2, bg.position.y);
+            bg.position = CGPointMake(bg.position.x + bgWidth*2, bg.position.y);
         }
     }];
 }
