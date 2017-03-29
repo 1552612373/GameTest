@@ -2,11 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
+      "filename" : "zombie4.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "player@2x.png",
+      "filename" : "zombie4@2x.png",
       "scale" : "2x"
     },
     {

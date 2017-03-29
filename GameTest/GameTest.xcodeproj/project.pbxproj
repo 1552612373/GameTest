@@ -14,7 +14,12 @@
 		2F2711E61E77952300F412FD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2F2711E41E77952300F412FD /* Main.storyboard */; };
 		2F2711E81E77952300F412FD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F2711E71E77952300F412FD /* Assets.xcassets */; };
 		2F2711EB1E77952300F412FD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2F2711E91E77952300F412FD /* LaunchScreen.storyboard */; };
-		2FDB488B1E823E2400C997F5 /* hitCat.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2FDB488A1E823E2400C997F5 /* hitCat.wav */; };
+		510CBBF51E8B7D8700768B8A /* bgMusic.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 510CBBF01E8B7D8700768B8A /* bgMusic.mp3 */; };
+		510CBBF61E8B7D8700768B8A /* hitCat.wav in Resources */ = {isa = PBXBuildFile; fileRef = 510CBBF11E8B7D8700768B8A /* hitCat.wav */; };
+		510CBBF71E8B7D8700768B8A /* hitCatLady.wav in Resources */ = {isa = PBXBuildFile; fileRef = 510CBBF21E8B7D8700768B8A /* hitCatLady.wav */; };
+		510CBBF81E8B7D8700768B8A /* lose.wav in Resources */ = {isa = PBXBuildFile; fileRef = 510CBBF31E8B7D8700768B8A /* lose.wav */; };
+		510CBBF91E8B7D8700768B8A /* win.wav in Resources */ = {isa = PBXBuildFile; fileRef = 510CBBF41E8B7D8700768B8A /* win.wav */; };
+		512652151E8B652300303883 /* GameOverScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 512652141E8B652300303883 /* GameOverScene.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,7 +35,13 @@
 		2F2711E71E77952300F412FD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2F2711EA1E77952300F412FD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2F2711EC1E77952300F412FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2FDB488A1E823E2400C997F5 /* hitCat.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hitCat.wav; sourceTree = "<group>"; };
+		510CBBF01E8B7D8700768B8A /* bgMusic.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bgMusic.mp3; sourceTree = "<group>"; };
+		510CBBF11E8B7D8700768B8A /* hitCat.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hitCat.wav; sourceTree = "<group>"; };
+		510CBBF21E8B7D8700768B8A /* hitCatLady.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hitCatLady.wav; sourceTree = "<group>"; };
+		510CBBF31E8B7D8700768B8A /* lose.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = lose.wav; sourceTree = "<group>"; };
+		510CBBF41E8B7D8700768B8A /* win.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = win.wav; sourceTree = "<group>"; };
+		512652131E8B652300303883 /* GameOverScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameOverScene.h; sourceTree = "<group>"; };
+		512652141E8B652300303883 /* GameOverScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameOverScene.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +86,8 @@
 				2F2711E91E77952300F412FD /* LaunchScreen.storyboard */,
 				2F2711EC1E77952300F412FD /* Info.plist */,
 				2F2711D41E77952300F412FD /* Supporting Files */,
+				512652131E8B652300303883 /* GameOverScene.h */,
+				512652141E8B652300303883 /* GameOverScene.m */,
 			);
 			path = GameTest;
 			sourceTree = "<group>";
@@ -90,7 +103,11 @@
 		2FDB488D1E823FD300C997F5 /* sounds */ = {
 			isa = PBXGroup;
 			children = (
-				2FDB488A1E823E2400C997F5 /* hitCat.wav */,
+				510CBBF01E8B7D8700768B8A /* bgMusic.mp3 */,
+				510CBBF11E8B7D8700768B8A /* hitCat.wav */,
+				510CBBF21E8B7D8700768B8A /* hitCatLady.wav */,
+				510CBBF31E8B7D8700768B8A /* lose.wav */,
+				510CBBF41E8B7D8700768B8A /* win.wav */,
 			);
 			name = sounds;
 			sourceTree = "<group>";
@@ -127,7 +144,7 @@
 					2F2711D01E77952200F412FD = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = TSUV32LBHT;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -155,9 +172,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				2F2711E61E77952300F412FD /* Main.storyboard in Resources */,
-				2FDB488B1E823E2400C997F5 /* hitCat.wav in Resources */,
+				510CBBF91E8B7D8700768B8A /* win.wav in Resources */,
+				510CBBF61E8B7D8700768B8A /* hitCat.wav in Resources */,
 				2F2711E81E77952300F412FD /* Assets.xcassets in Resources */,
+				510CBBF81E8B7D8700768B8A /* lose.wav in Resources */,
+				510CBBF71E8B7D8700768B8A /* hitCatLady.wav in Resources */,
 				2F2711EB1E77952300F412FD /* LaunchScreen.storyboard in Resources */,
+				510CBBF51E8B7D8700768B8A /* bgMusic.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,6 +189,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				512652151E8B652300303883 /* GameOverScene.m in Sources */,
 				2F2711E31E77952300F412FD /* GameViewController.m in Sources */,
 				2F2711D91E77952300F412FD /* AppDelegate.m in Sources */,
 				2F2711E01E77952300F412FD /* GameScene.m in Sources */,
@@ -289,14 +311,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = TSUV32LBHT;
 				INFOPLIST_FILE = GameTest/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.poplar.GameTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "59de161d-55c7-4115-8d34-7907dfba53a6";
-				PROVISIONING_PROFILE_SPECIFIER = poplar20170105;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -305,14 +328,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = TSUV32LBHT;
 				INFOPLIST_FILE = GameTest/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.poplar.GameTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "59de161d-55c7-4115-8d34-7907dfba53a6";
-				PROVISIONING_PROFILE_SPECIFIER = poplar20170105;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

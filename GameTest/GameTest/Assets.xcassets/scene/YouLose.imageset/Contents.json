@@ -2,11 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "chick.png",
+      "filename" : "YouLose.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "YouLose@2x.png",
       "scale" : "2x"
     },
     {
