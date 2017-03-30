@@ -88,6 +88,7 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
     SKAction *_enemyCollisionSound; // 音效
     SKNode *_bgLayer;
     AVAudioPlayer *_backgroundMusicPlayer;
+    SKLabelNode *_catCountNode; // 显示捕捉到的数目
     
     int _lives; // player（conga）生命数
     BOOL _gameOver;
@@ -176,19 +177,28 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
 
 - (void)createCatShowView
 {
+    // cat图片显示
     SKSpriteNode *rightNode = [SKSpriteNode spriteNodeWithImageNamed:@"cat_Fotor"];
     float space = 5;
-    float WHScale = 1080/1920.0;
     float nodeWidth = 25;
     rightNode.size = CGSizeMake(nodeWidth, nodeWidth);
     rightNode.position = CGPointMake( (space + 24/2)*5 +60 , self.size.height - 24/2 - space);
     rightNode.alpha = 0.7;
     [self addChild:rightNode];
     
-    SKSpriteNode *mulNode = [SKSpriteNode spriteNodeWithImageNamed:@"multi"];
-    mulNode.size = CGSizeMake(nodeWidth, nodeWidth);
-    mulNode.position = CGPointMake( (space + 24/2)*5 + 60 +30 , self.size.height - 24/2 - space);
+    // 乘号
+    SKLabelNode *mulNode = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
+    mulNode.position = CGPointMake( CGRectGetMaxX(rightNode.frame)+10 , rightNode.position.y-5);
+    mulNode.text = @"x";
+    mulNode.fontSize = 15;
     [self addChild:mulNode];
+    
+    // 捕捉数目
+    _catCountNode = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
+    _catCountNode.position = CGPointMake(CGRectGetMaxX(mulNode.frame) + 25 , mulNode.position.y-2 );
+    _catCountNode.text = @"0/20";
+    _catCountNode.fontSize = 15;
+    [self addChild:_catCountNode];
     
 }
 
@@ -563,8 +573,10 @@ static const float ZOMBIE_ROTATE_RADIANS_PKER_SEC = 4 * M_PI;
                 [cat runAction:moveAction];
             }
             targetPosition = cat.position;
-        }];
+    }];
     
+    
+    _catCountNode.text = [NSString stringWithFormat:@"%d/20",trainCount];
     
     if (trainCount >= 20 && !_gameOver)
     {
